@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import {
   Segment,
   Grid,
@@ -35,14 +36,16 @@ const OrderBy = () => (
           <Grid.Column width={12}>
             <Form>
               <Form.Field inline>
-                <label>Ordenar por:</label>
+                <label>Ordenar por: </label>
                 <Select options={orderOptions} />
               </Form.Field>
             </Form>
           </Grid.Column>
 
           <Grid.Column width={4}>
-              <Button color='pink'>Adicionar Post</Button>
+            <Link to="/posts">
+              <Button fluid color='pink'>Inserir Post</Button>
+            </Link>
           </Grid.Column>
         </Grid.Row>
       </Grid>

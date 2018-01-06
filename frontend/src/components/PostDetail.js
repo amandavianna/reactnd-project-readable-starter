@@ -7,10 +7,11 @@ import {
   Divider
 } from 'semantic-ui-react'
 import Author from './Author'
+import PostActions from './PostActions'
 import GetComment from './GetComment'
 import AddComment from './AddComment'
 
-class Post extends Component {
+class PostDetail extends Component {
   render() {
     return (
       <div>
@@ -31,14 +32,7 @@ class Post extends Component {
               </Grid.Row>
               <Grid.Row>
                 <Grid.Column>
-                    <Label circular>2</Label>
-                    <Icon name='comment' size='large' />
-                    <Label circular>2</Label>
-                    <Icon name='like outline' size='large' />
-                    <Label circular>1</Label>
-                    <Icon name='dislike outline' size='large' />
-                    <Icon link name='pencil' size='large' />
-                    <Icon link name='trash' size='large' />
+                    <PostActions />
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row>
@@ -58,4 +52,4 @@ class Post extends Component {
 
 }
 
-export default Post
+export default PostDetail

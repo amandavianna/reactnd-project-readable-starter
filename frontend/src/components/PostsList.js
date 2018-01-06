@@ -7,8 +7,9 @@ import {
   List
 } from 'semantic-ui-react'
 import Author from './Author'
+import PostActions from './PostActions'
 
-class Posts extends Component {
+class PostsList extends Component {
   render() {
     return (
       <List divided relaxed>
@@ -35,21 +36,10 @@ class Posts extends Component {
                 </Grid.Column>
               </Grid.Row>
               <Grid.Row>
-                <Grid.Column width={8}>
-                  <a href="">Leia mais <Icon name='angle double right' /></a>
-                </Grid.Column>
-                <Grid.Column width={8} textAlign='right'>
-                    <Label circular>2</Label>
-                    <Icon name='comment' size='large' />
-                    <Label circular>2</Label>
-                    <Icon name='like outline' size='large' />
-                    <Label circular>1</Label>
-                    <Icon name='dislike outline' size='large' />
-                    <Icon link name='pencil' size='large' />
-                    <Icon link name='trash' size='large' />
+                <Grid.Column>
+                  <PostActions />
                 </Grid.Column>
               </Grid.Row>
-
             </Grid>
           </List.Content>
         </List.Item>
@@ -60,4 +50,4 @@ class Posts extends Component {
 
 }
 
-export default Posts
+export default PostsList

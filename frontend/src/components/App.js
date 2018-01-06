@@ -1,42 +1,23 @@
 import React from 'react'
+import { Switch, Route } from 'react-router-dom'
 import {
-  Container,
-  Grid
+  Container
 } from 'semantic-ui-react'
 
 import Header from './Header'
 import Footer from './Footer'
-
-// import OrderBy from './OrderBy'
-// import Posts from './Posts'
-
-// import FormPost from './FormPost'
-
-// import PostsCategory from './PostsCategory'
-
-import Post from './Post'
-
-import Sidebar from './Sidebar'
-
+import FormPost from './FormPost'
+import Main from './Main'
 
 const App = () => (
   <div className="App">
     <Header />
     <Container>
-      <Grid stackable>
-        <Grid.Row>
-          <Grid.Column width={11}>
-            {/* <OrderBy/>
-            <Posts /> */}
-            {/* <FormPost/> */}
-            {/* <PostsCategory /> */}
-            <Post />
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <Sidebar />
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+      <Switch>
+        <Route path="/posts" component={FormPost} />
+        <Route path="/posts/:id" component={FormPost} />
+        <Route component={Main} />
+      </Switch>
     </Container>
     <Footer />
   </div>
