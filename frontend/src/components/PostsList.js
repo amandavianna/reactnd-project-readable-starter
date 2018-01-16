@@ -1,4 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import sortBy from 'sort-by'
 import {
   Grid,
   Header,
@@ -8,46 +11,70 @@ import {
 } from 'semantic-ui-react'
 import Author from './Author'
 import PostActions from './PostActions'
+import {
+  FetchGetAllPosts
+} from '../actions'
 
 class PostsList extends Component {
-  render() {
-    return (
-      <List divided relaxed>
-        <List.Item>
-          <List.Content>
-          <Grid>
-              <Grid.Row>
-                <Grid.Column floated='left' width={13}>
-                  <Header as='h3' style={{ margin: '0px 0px 5px' }}>Second Header</Header>
-                  <Author name='Amanda Vianna' timestamp='03/01/2018'/>
-                </Grid.Column>
-                <Grid.Column floated='right' width={3} textAlign='right'>
-                  <Label.Group color='teal'>
-                    <Label as='a'>
-                      <Icon name='tag' />
-                      Smart
-                    </Label>
-                  </Label.Group>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  <p>{('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique, tortor mauris molestie elit, et lacinia ipsum quam nec dui. Quisque nec mauris sit amet elit iaculis pretium sit amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu diam. Pellentesque rhoncus aliquam mattis. Ut vulputate eros sed felis sodales nec vulputate justo hendrerit. Vivamus varius pretium ligula, a aliquam odio euismod').substr(0, 300).trim()}</p>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  <PostActions />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </List.Content>
-        </List.Item>
+  componentDidMount() {
+    this.props.dispatch(FetchGetAllPosts())
+  }
 
-      </List>
+  render() {
+    const { posts } = this.props
+
+    return (
+      <div>
+        <List divided relaxed>
+          {posts.map(post => (
+            <List.Item key={post.id} style={{ padding: '15px 0' }}>
+              <List.Content>
+              <Grid>
+                  <Grid.Row>
+                    <Grid.Column floated='left' width={13}>
+                      <Header as='h3' style={{ margin: '0px 0px 5px' }}>
+                        <Link to={`/posts/${post.id}`}>
+                          {post.title}
+                        </Link>
+                      </Header>
+                      <Author name={post.author} timestamp={post.timestamp}/>
+                    </Grid.Column>
+                    <Grid.Column floated='right' width={3} textAlign='right'>
+                      <Label.Group color='teal'>
+                        <Link to={`/${post.category}/posts`}>
+                          <Label>
+                            <Icon name='tag' />
+                            {post.category}
+                          </Label>
+                        </Link>
+                      </Label.Group>
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Column>
+                    {post.body !== undefined ?
+                      <p>{post.body.substr(0, 300).trim()}</p>
+                    : ''}
+                    </Grid.Column>
+                  </Grid.Row>
+                  <Grid.Row>
+                    <Grid.Column>
+                      <PostActions post={post} />
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+              </List.Content>
+            </List.Item>
+          ))}
+        </List>
+      </div>
     )
   }
 
 }
 
-export default PostsList
+const mapStateToProps = ({posts}, ownProps) => ({
+  posts: posts.sort(sortBy(ownProps.orderBy))
+})
+
+export default connect(mapStateToProps)(PostsList)

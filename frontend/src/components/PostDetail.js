@@ -4,52 +4,131 @@ import {
   Header,
   Icon,
   Label,
-  Divider
+  Divider,
+  Comment
 } from 'semantic-ui-react'
+import {
+  FetchGetPostDetail,
+  FetchDeletePost,
+  FetchGetPostComments,
+  FetchVotePost,
+  FetchVoteComment,
+  FetchDeleteComment
+} from '../actions'
+
+import { connect } from 'react-redux'
+import { Link, Redirect } from 'react-router-dom'
+import sortBy from 'sort-by'
 import Author from './Author'
+import FormComment from './FormComment'
 import PostActions from './PostActions'
-import GetComment from './GetComment'
-import AddComment from './AddComment'
 
 class PostDetail extends Component {
+  componentDidMount() {
+    const postId = this.props.match.params.id
+    this.props.dispatch(FetchGetPostDetail(postId))
+    this.props.dispatch(FetchGetPostComments(postId))
+  }
+  onVote(id,vote){
+    this.props.dispatch(FetchVotePost(id,vote))
+  }
+  onClickDelete(post){
+    this.props.dispatch(FetchDeletePost(post))
+  }
+  onVoteComment(id,vote){
+    this.props.dispatch(FetchVoteComment(id,vote))
+  }
+  onClickDeleteComment(comment){
+    this.props.dispatch(FetchDeleteComment(comment))
+  }
+  componentWillReceiveProps(nextProps) {
+    if(this.props.comments.length !== nextProps.comments.length) {
+      this.props.dispatch(FetchGetPostDetail(this.props.post.id))
+    }
+  }
+
   render() {
+    const { post, comments } = this.props
+
+    if (post.error || Object.keys(post).length === 0) return <Redirect to='/' />
+
     return (
       <div>
-          <Grid>
-              <Grid.Row>
-                <Grid.Column floated='left' width={13}>
-                  <Header as='h3' style={{ margin: '0px 0px 5px' }}>Second Header</Header>
-                  <Author name='Amanda Vianna' timestamp='03/01/2018' />
-                </Grid.Column>
-                <Grid.Column floated='right' width={3} textAlign='right'>
-                  <Label.Group color='teal'>
-                    <Label as='a'>
-                      <Icon name='tag' />
-                      Smart
-                    </Label>
-                  </Label.Group>
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                    <PostActions />
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique, tortor mauris molestie elit, et lacinia ipsum quam nec dui. Quisque nec mauris sit amet elit iaculis pretium sit amet quis magna. Aenean velit odio, elementum in tempus ut, vehicula eu diam. Pellentesque rhoncus aliquam mattis. Ut vulputate eros sed felis sodales nec vulputate justo hendrerit. Vivamus varius pretium ligula, a aliquam odio euismod</p>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+        <Grid>
+          <Grid.Row>
+            <Grid.Column floated='left' width={13}>
+              <Header as='h2' style={{ margin: '0px 0px 5px' }}>{post.title}</Header>
+              <Author name={post.author} timestamp={post.timestamp} />
+            </Grid.Column>
+            <Grid.Column floated='right' width={3} textAlign='right'>
+              <Label.Group color='teal'>
+                <Link to={`/${post.category}/posts`}>
+                  <Label>
+                    <Icon name='tag' />
+                    {post.category}
+                  </Label>
+                </Link>
+              </Label.Group>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column>
+              <p>{post.body}</p>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column>
+              <PostActions post={post} />
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
 
-            <Divider />
+        <Divider section />
 
-            <GetComment />
-            <AddComment />
+        <Header size='medium'>{post.commentCount > 0 ? 'Comentários da postagem' : 'Nenhum comentário'} </Header>
+        {comments.map(comment => (
+          <Comment.Group size='small' key={comment.id} style={{ maxWidth: '100%' }}>
+            <Comment>
+              <Comment.Content>
+                <Grid>
+                  <Grid.Row>
+                    <Grid.Column width={11}>
+                      <Author name={comment.author} timestamp={comment.timestamp} color='black' />
+                    </Grid.Column>
+                    <Grid.Column width={5} textAlign='right'>
+                      <Icon name='like outline' size='large' link onClick={() => this.onVoteComment(comment.id,'upVote')}/>
+                      <Label circular>{comment.voteScore}</Label>
+                      <Icon name='dislike outline' size='large' link onClick={() => this.onVoteComment(comment.id,'downVote')}/>
+                      <Link
+                        to={{
+                          pathname: `/editComment/${comment.id}`,
+                          state: {...comment, postUrl: this.props.location.pathname}
+                        }}>
+                        <Icon name='pencil' link color='black' size='large' />
+                      </Link>
+                      <Icon onClick={() => this.onClickDeleteComment(comment)} link name='trash' size='large' />
+                    </Grid.Column>
+                  </Grid.Row>
+                </Grid>
+                <Comment.Text>{comment.body}</Comment.Text>
+              </Comment.Content>
+            </Comment>
+          </Comment.Group>
+        ))}
+
+        <Divider section />
+
+        <FormComment parentId={this.props.match.params.id} postUrl={this.props.location.pathname} />
+
       </div>
     )
   }
 
 }
 
-export default PostDetail
+const mapStateToProps = ({post, comments}) => ({
+  post,
+  comments: comments.sort(sortBy('-voteScore'))
+})
+
+export default connect(mapStateToProps)(PostDetail)

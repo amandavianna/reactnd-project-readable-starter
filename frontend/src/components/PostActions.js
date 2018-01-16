@@ -1,27 +1,58 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {
+  Grid,
   Icon,
   Label
 } from 'semantic-ui-react'
+import { connect } from 'react-redux'
+import { Link, withRouter } from 'react-router-dom'
+import {
+  FetchGetAllPosts,
+  FetchDeletePost,
+  FetchVotePost
+} from '../actions'
 
-const PostActions = () => (
-  <div>
-    <Label>
-      <Icon name='comment' size='large' /> 2 comentário(s)
-    </Label>
+class PostActions extends Component {
 
-    <Label>
-      <Icon name='like outline' size='large' /> 2 like
-    </Label>
+  onVote(id, option){
+    this.props.dispatch(FetchVotePost(id, option))
+    this.props.dispatch(FetchGetAllPosts())
+  }
 
-    <Label>
-      <Icon name='dislike outline' size='large' /> 1 dislike
-    </Label>
+  onClickDelete(post){
+    this.props.dispatch(FetchDeletePost(post))
+    this.props.dispatch(FetchGetAllPosts())
+  }
 
-    <Label><Icon name='pencil' size='large' />editar</Label>
+  render() {
+    const { post } = this.props
 
-    <Label><Icon name='trash' size='large' />excluir</Label>
-  </div>
-)
+    return (
+      <Grid stackable columns='equal'>
+        <Grid.Row>
+          <Grid.Column>
+            <Label as={Link} to={{pathname:`/posts/${post.id}`, hash: '#comment'}}>
+              <Icon name='comment' /> {post.commentCount}
+            </Label>
+          </Grid.Column>
+          <Grid.Column>
+            <Icon name='like outline' size='large' link onClick={() => this.onVote(post.id,'upVote')}/>
+            <Label circular>{post.voteScore}</Label>
+            <Icon name='dislike outline' size='large' link onClick={() => this.onVote(post.id,'downVote')}/>
+          </Grid.Column>
+          <Grid.Column>
+            <Label as={Link} to={{
+              pathname: `/editPost/${post.id}`,
+              state: {...post, postUrl: this.props.location.pathname}
+            }}>
+              <Icon name='pencil' />editar
+            </Label>
+            <Label as={Link} to='/' onClick={() => this.onClickDelete(post)}><Icon name='trash' />excluir</Label>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    )
+  }
+}
 
-export default PostActions
+export default withRouter(connect()(PostActions))

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Header } from 'semantic-ui-react'
+import { dateFormat } from '../utils/helpers'
 
 const Author = ({name, timestamp, color}) => (
   <Header
@@ -7,7 +8,7 @@ const Author = ({name, timestamp, color}) => (
     color={color || 'grey'}
     style={{ margin: '0px' }}
   >
-    {name} | {timestamp}
+    {name} | {dateFormat(timestamp)}
   </Header>
 )
 
