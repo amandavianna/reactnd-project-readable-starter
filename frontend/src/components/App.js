@@ -30,7 +30,7 @@ const App = () => (
               <Route exact path="/editPost/:id" component={FormPost} />
               <Route exact path="/editComment/:id" component={FormComment} />
               <Route exact path="/posts/:id" component={PostDetail} />
-              <Route exact path="/:category/posts" component={PostsCategory} />
+              <Route exact path="/:category" component={PostsCategory} />
               <Route component={Page404} />
             </Switch>
           </Grid.Column>

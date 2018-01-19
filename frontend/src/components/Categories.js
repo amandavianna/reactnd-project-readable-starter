@@ -16,7 +16,7 @@ class Categories extends Component {
         <Header as='h4' content='Categorias' />
         <Label.Group color='blue'>
         {categories.map(category => (
-          <Label as={Link} to={`/${category.path}/posts`} key={category.name}>
+          <Label as={Link} to={`/${category.path}`} key={category.name}>
             {category.name}
           </Label>
         ))}

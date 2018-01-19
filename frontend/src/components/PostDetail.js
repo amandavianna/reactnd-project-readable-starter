@@ -61,14 +61,9 @@ class PostDetail extends Component {
               <Author name={post.author} timestamp={post.timestamp} />
             </Grid.Column>
             <Grid.Column floated='right' width={3} textAlign='right'>
-              <Label.Group color='teal'>
-                <Link to={`/${post.category}/posts`}>
-                  <Label>
-                    <Icon name='tag' />
-                    {post.category}
-                  </Label>
-                </Link>
-              </Label.Group>
+              <Label as={Link} to={`/${post.category}`} color='teal' >
+                <Icon name='tag' /> {post.category}
+              </Label>
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
