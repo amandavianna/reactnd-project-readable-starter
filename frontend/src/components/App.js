@@ -29,7 +29,7 @@ const App = () => (
               <Route exact path="/addPost" component={FormPost} />
               <Route exact path="/editPost/:id" component={FormPost} />
               <Route exact path="/editComment/:id" component={FormComment} />
-              <Route exact path="/posts/:id" component={PostDetail} />
+              <Route exact path="/:category/:id" component={PostDetail} />
               <Route exact path="/:category" component={PostsCategory} />
               <Route component={Page404} />
             </Switch>

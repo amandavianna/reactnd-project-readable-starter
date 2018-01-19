@@ -33,7 +33,7 @@ class PostsList extends Component {
                   <Grid.Row>
                     <Grid.Column floated='left' width={13}>
                       <Header as='h3' style={{ margin: '0px 0px 5px' }}>
-                        <Link to={`/posts/${post.id}`}>
+                        <Link to={`/${post.category}/${post.id}`}>
                           {post.title}
                         </Link>
                       </Header>

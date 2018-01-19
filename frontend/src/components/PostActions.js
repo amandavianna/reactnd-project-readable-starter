@@ -31,7 +31,7 @@ class PostActions extends Component {
       <Grid stackable columns='equal'>
         <Grid.Row>
           <Grid.Column>
-            <Label as={Link} to={{pathname:`/posts/${post.id}`, hash: '#comment'}}>
+            <Label as={Link} to={{pathname:`/${post.category}/${post.id}`, hash: '#comment'}}>
               <Icon name='comment' /> {post.commentCount}
             </Label>
           </Grid.Column>
