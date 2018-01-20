@@ -12,11 +12,27 @@ import {
 import Author from './Author'
 import PostActions from './PostActions'
 import {
-  FetchGetAllPosts
+  FetchGetAllPosts,
+  FetchVotePost,
+  FetchDeletePost
 } from '../actions'
 
 class PostsList extends Component {
+  constructor(props) {
+    super(props)
+
+    this.onVote = this.onVote.bind(this)
+    this.onClickDelete = this.onClickDelete.bind(this)
+  }
+
   componentDidMount() {
+    this.props.dispatch(FetchGetAllPosts())
+  }
+  onVote(id, option){
+    this.props.dispatch(FetchVotePost(id, option))
+  }
+  onClickDelete(post){
+    this.props.dispatch(FetchDeletePost(post))
     this.props.dispatch(FetchGetAllPosts())
   }
 
@@ -54,7 +70,11 @@ class PostsList extends Component {
                   </Grid.Row>
                   <Grid.Row>
                     <Grid.Column>
-                      <PostActions post={post} />
+                      <PostActions
+                        post={post}
+                        onVote={this.onVote}
+                        onClickDelete={this.onClickDelete}
+                      />
                     </Grid.Column>
                   </Grid.Row>
                 </Grid>
@@ -69,7 +89,7 @@ class PostsList extends Component {
 }
 
 const mapStateToProps = ({posts}, ownProps) => ({
-  posts: posts.sort(sortBy(ownProps.orderBy))
+  posts: posts.slice().sort(sortBy(ownProps.orderBy))
 })
 
 export default connect(mapStateToProps)(PostsList)

@@ -26,6 +26,7 @@ const posts = (state = [], action) => {
       return [...state, action.post]
     case DELETE_POST:
       return state.filter(post => post.id !== action.id)
+    case VOTE_POST:
     case EDIT_POST:
       return state.map(post => post.id === action.post.id ? action.post : post)
     default:
@@ -36,8 +37,6 @@ const posts = (state = [], action) => {
 const post = (state = [], action) => {
   switch (action.type) {
     case GET_POST_DETAIL:
-      return action.post
-    case VOTE_POST:
       return action.post
     default:
       return state

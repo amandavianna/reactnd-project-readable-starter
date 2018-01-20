@@ -17,13 +17,20 @@ import {
 } from '../actions'
 
 import { connect } from 'react-redux'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import sortBy from 'sort-by'
 import Author from './Author'
 import FormComment from './FormComment'
 import PostActions from './PostActions'
 
 class PostDetail extends Component {
+  constructor(props) {
+    super(props)
+
+    this.onVote = this.onVote.bind(this)
+    this.onClickDelete = this.onClickDelete.bind(this)
+  }
+
   componentDidMount() {
     const postId = this.props.match.params.id
     this.props.dispatch(FetchGetPostDetail(postId))
@@ -31,6 +38,7 @@ class PostDetail extends Component {
   }
   onVote(id,vote){
     this.props.dispatch(FetchVotePost(id,vote))
+    this.props.dispatch(FetchGetPostDetail(id))
   }
   onClickDelete(post){
     this.props.dispatch(FetchDeletePost(post))
@@ -49,8 +57,6 @@ class PostDetail extends Component {
 
   render() {
     const { post, comments } = this.props
-
-    if (post.error || Object.keys(post).length === 0) return <Redirect to='/' />
 
     return (
       <div>
@@ -73,7 +79,11 @@ class PostDetail extends Component {
           </Grid.Row>
           <Grid.Row>
             <Grid.Column>
-              <PostActions post={post} />
+              <PostActions
+                post={post}
+                onVote={this.onVote}
+                onClickDelete={this.onClickDelete}
+              />
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -123,7 +133,7 @@ class PostDetail extends Component {
 
 const mapStateToProps = ({post, comments}) => ({
   post,
-  comments: comments.sort(sortBy('-voteScore'))
+  comments: comments.slice().sort(sortBy('-voteScore'))
 })
 
 export default connect(mapStateToProps)(PostDetail)
